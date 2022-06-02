@@ -1,0 +1,7 @@
+MYSQL_CONFIG = {
+    'host': '',
+    'user': '',
+    'password': '',
+    'database': '',
+}
+SESSION_SECRET_KEY = ''
