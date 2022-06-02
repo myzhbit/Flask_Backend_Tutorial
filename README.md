@@ -1,5 +1,12 @@
 ## Flask后端基础教程项目
 
+### 本教程项目涉及技术文档
+**Flask**：[官方文档中文翻译](https://dormousehole.readthedocs.io/en/latest/)
+
+**Mysql-Connector-Python**：[官方文档](https://dev.mysql.com/doc/connector-python/en/)
+
+**Gravatar**：[官网](https://cn.gravatar.com/)
+
 ### 这个项目是什么？
 本教程项目仿照的是Gravatar的功能所实现的一个基础的后端，只有后端，没有前端。
 目前所实现的接口有：
