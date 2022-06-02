@@ -3,8 +3,11 @@ import imghdr
 import os
 from typing import Optional
 
+import sqlalchemy.exc
 from werkzeug.datastructures import FileStorage
 
+import utils
+from models import db_session
 from models.user import User
 
 
@@ -12,11 +15,21 @@ class UserController:
 
     @classmethod
     def create_user(cls, email: str, password: str, nickname: str) -> bool:
-        return User.register(email, password, nickname)
+        salt = utils.gen_random_salt()
+        hashed_password = hashlib.sha1((salt + password).encode('utf-8')).hexdigest()
+        user_hash = hashlib.md5(email.strip().lower().encode('utf-8')).hexdigest()
+        user = User(email=email, password=hashed_password, salt=salt, nickname=nickname, hash=user_hash)
+        try:
+            db_session.add(user)
+            db_session.commit()
+            return True
+        except sqlalchemy.exc.IntegrityError:
+            db_session.rollback()
+            return False
 
     @classmethod
     def login(cls, email: str, password: str) -> bool:
-        user = User.get_user(email)
+        user = db_session.query(User).filter(User.email == email).first()
         if not user:
             return False
         hashed_password = hashlib.sha1((user.salt + password).encode('utf-8')).hexdigest()
@@ -26,14 +39,14 @@ class UserController:
 
     @classmethod
     def get_user_info(cls, email: str) -> Optional[User]:
-        user = User.get_user(email)
+        user = db_session.query(User).filter(User.email == email).first()
         if not user:
             return None
         return user.to_dict()
 
     @classmethod
     def get_user_avatar(cls, user_hash: str) -> (Optional[bytes], Optional[str]):
-        user = User.get_user_by_hash(user_hash)
+        user = db_session.query(User).filter(User.hash == user_hash).first()
         if not user:
             return None, None
 
