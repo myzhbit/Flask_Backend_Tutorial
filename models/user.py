@@ -1,6 +1,6 @@
 from sqlalchemy import Column, VARCHAR, Integer, CHAR
 
-from models import Base
+from models import Base, engine
 
 
 class User(Base):
@@ -19,3 +19,6 @@ class User(Base):
             'hash': self.hash,
             'nickname': self.nickname
         }
+
+
+Base.metadata.tables['user'].create(bind=engine, checkfirst=True)
