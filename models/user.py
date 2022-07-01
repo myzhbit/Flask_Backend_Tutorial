@@ -24,7 +24,7 @@ class User:
     @classmethod
     def get_user(cls, email: str) -> Optional['User']:
         with my_conn.cursor() as cursor:
-            command = "SELECT * FROM nona_tutorial.user WHERE email = %s"
+            command = "SELECT * FROM user WHERE email = %s"
             cursor.execute(command, (email,))
             user = cursor.fetchone()
             if user:
@@ -35,7 +35,7 @@ class User:
     @classmethod
     def get_user_by_hash(cls, user_hash: str) -> Optional['User']:
         with my_conn.cursor() as cursor:
-            command = "SELECT * FROM nona_tutorial.user WHERE hash = %s"
+            command = "SELECT * FROM user WHERE hash = %s"
             cursor.execute(command, (user_hash,))
             user = cursor.fetchone()
             if user:
@@ -50,7 +50,7 @@ class User:
         user_hash = hashlib.md5(email.strip().lower().encode('utf-8')).hexdigest()
         with my_conn.cursor() as cursor:
             try:
-                command = "INSERT INTO nona_tutorial.user (email, password, salt, hash, nickname) " \
+                command = "INSERT INTO user (email, password, salt, hash, nickname) " \
                           "VALUES (%s, %s, %s, %s, %s)"
                 cursor.execute(command, (email, hashed_password, salt, user_hash, nickname))
                 my_conn.commit()
